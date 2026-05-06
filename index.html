@@ -378,10 +378,17 @@
   .pedals-grid {
     position: relative;
     z-index: 2;
-    padding: 24px 14px 22px;
+    padding: 24px 12px 22px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
-    gap: 26px 18px;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 24px 14px;
+  }
+  /* 宽屏：强制 8 列一排（所有效果器一行放下） */
+  @media (min-width: 1180px) {
+    .pedals-grid {
+      grid-template-columns: repeat(8, 1fr);
+      gap: 24px 12px;
+    }
   }
 
   /* ========== Pedal：写实风 ========== */
@@ -724,7 +731,24 @@
 
   /* ========== Mobile ========== */
   @media (max-width: 720px) {
-    .topbar { padding: 9px 12px; }
+    /* 顶栏不固定，让出更多视口给照片+效果器 */
+    .topbar { padding: 9px 12px; position: static; }
+
+    /* 照片粘在顶部，下面的效果器单独滑动；
+       在 sticky-zone 内，所以滑过 pedalboard 末尾后会随页面继续滚动 */
+    .sticky-zone .canvas-area {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      margin-bottom: 12px;
+      box-shadow:
+        inset 0 2px 8px rgba(0,0,0,0.5),
+        0 6px 12px rgba(0,0,0,0.5);
+    }
+    /* 缩短预览高度，给下方效果器留空间 */
+    #preview { max-height: 38vh; }
+    .canvas-area { min-height: 160px; padding: 10px; }
+
     .logo-text { font-size: 11px; letter-spacing: 4px; }
     .logo-version { display: none; }
     .brand-credit {
@@ -735,8 +759,6 @@
     }
     main { padding: 12px 12px 40px; }
     .toolbar .btn { padding: 7px 12px; font-size: 11px; }
-    .canvas-area { min-height: 200px; padding: 10px; }
-    #preview { max-height: 45vh; }
     .pedals-grid {
       grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
       gap: 24px 14px;
@@ -974,24 +996,26 @@
     <button class="btn btn-primary" id="download-btn" disabled data-i18n="export">Export</button>
   </div>
 
-  <div class="canvas-area" id="canvas-area">
-    <div class="upload-prompt" id="upload-prompt">
-      <div class="upload-icon">+</div>
-      <div class="prompt-line1" id="prompt-line1" data-i18n="dropHint">Drop your photo here · or click Upload</div>
-      <div class="prompt-line2" id="prompt-line2" data-i18n="formats">JPG / PNG / WebP</div>
-      <div class="prompt-privacy" data-i18n="privacy">🔒 Photos never leave your browser</div>
+  <div class="sticky-zone">
+    <div class="canvas-area" id="canvas-area">
+      <div class="upload-prompt" id="upload-prompt">
+        <div class="upload-icon">+</div>
+        <div class="prompt-line1" id="prompt-line1" data-i18n="dropHint">Drop your photo here · or click Upload</div>
+        <div class="prompt-line2" id="prompt-line2" data-i18n="formats">JPG / PNG / WebP</div>
+        <div class="prompt-privacy" data-i18n="privacy">🔒 Photos never leave your browser</div>
+      </div>
+      <canvas id="preview" hidden></canvas>
     </div>
-    <canvas id="preview" hidden></canvas>
-  </div>
 
-  <div class="pedalboard-wrap">
-    <div class="pedalboard-header">
-      <div class="pedalboard-title" data-i18n="chainTitle">Signal Chain (Left → Right)</div>
-      <div class="pedalboard-hint" data-i18n="chainHint">Drag to reorder · Tap footswitch to bypass</div>
-    </div>
-    <div class="pedalboard">
-      <svg class="cables" id="cables" xmlns="http://www.w3.org/2000/svg"></svg>
-      <div class="pedals-grid" id="pedals-grid"></div>
+    <div class="pedalboard-wrap">
+      <div class="pedalboard-header">
+        <div class="pedalboard-title" data-i18n="chainTitle">Signal Chain (Left → Right)</div>
+        <div class="pedalboard-hint" data-i18n="chainHint">Drag to reorder · Tap footswitch to bypass</div>
+      </div>
+      <div class="pedalboard">
+        <svg class="cables" id="cables" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="pedals-grid" id="pedals-grid"></div>
+      </div>
     </div>
   </div>
 
